@@ -34,17 +34,16 @@ export default function VideoTile({ detection, minimal = false }) {
     const img = new Image();
 
     img.onload = () => {
-      // Set canvas size to match image
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      // Draw image
-      ctx.drawImage(img, 0, 0);
-
-      // Draw bounding boxes (though backend already draws them, we do it for extra clarity)
-      if (detection.detections && detection.detections.boxes) {
-        drawBoundingBoxes(ctx, detection.detections);
+      // Only resize if dimensions changed
+      if (canvas.width !== img.width || canvas.height !== img.height) {
+        canvas.width = img.width;
+        canvas.height = img.height;
       }
+
+      // Draw image (contains boxes drawn by backend)
+      ctx.drawImage(img, 0, 0);
+      
+      // REMOVED frontend drawBoundingBoxes to prevent UI freeze at high FPS
     };
 
     img.onerror = () => {
